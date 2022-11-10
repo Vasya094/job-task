@@ -1,0 +1,230 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.history-table {
+  padding: 0 2rem;
+}
+
+.history-table__name-col {
+  grid-area: EventType;
+}
+
+.history-table__details-col {
+  grid-area: Details;
+  margin-left: 3rem;
+}
+
+.history-table__code-col {
+  grid-area: Code;
+}
+
+.history-table__date-col {
+  grid-area: Date;
+}
+
+.history-table__table-row,
+.history-table__table-head {
+  display: grid;
+  grid-template-columns: 15% 60% 12% 12%;
+  grid-template-areas: "EventType Details Code Date";
+  column-gap: 10px;
+  row-gap: 8px;
+}
+
+.history-table__table-row {
+  margin: 14px 0;
+}
+
+.history-table__table-body {
+  min-height: 80vh;
+}
+
+.history-table__table-body-container {
+  height: 75vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin-top: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .history-table__table-head {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    grid-template-areas: "EventType Code""Details Date"
+  }
+
+  .history-table__table-row {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    grid-template-areas: "EventType Date""Details Code"
+  }
+
+  .history-table__name-col {
+    margin-bottom: 10px;
+  }
+
+  .history-table__details-col {
+    margin-left: 0;
+  }
+
+  .history-table__code-col {
+    text-align: right;
+  }
+
+  .history-table__code-col-tbody {
+    color: #bdbdbd;
+  }
+
+  .history-table__date-col {
+    text-align: right;
+  }
+
+  .gray-data {
+    display: none;
+  }
+
+  .history-table__details-col {
+    width: max-content;
+  }
+}
+
+.history-table__cell-Appointment {
+  background-color: #BBC5F8;
+  border: 1px solid #788eff;
+}
+
+.history-table__cell-Observation {
+  background-color: #98EBFD;
+  border: 1px solid #24bbdd;
+}
+
+.history-table__cell-Condition {
+  background-color: #DAEABE;
+  border: 1px solid #8fcc26;
+}
+
+.history-table__cell-AllergyIntolerance {
+  background-color: #FFBFDA;
+  border: 1px solid #eb4087;
+}
+
+.history-table__cell-CarePlan {
+  background-color: #E8C1EE;
+  border: 1px solid #cb59dd;
+}
+
+.history-table__cell-Diagnosis {
+  background-color: #FEE1D9;
+  border: 1px solid #e0623f;
+}
+
+.history-table__cell-MedicationStatement {
+  background-color: #B6EBD8;
+  border: 1px solid #34b686;
+}
+
+.history-table__cell-Immunization {
+  background-color: #e7c18eb6;
+  border: 1px solid #f5ac4d;
+}
+
+.history-table__first-cell {
+  border-radius: 2px;
+  padding: 2px;
+}
+
+.loading-container {
+  height: 1rem;
+}
+
+.with-separator {
+  box-sizing: border-box;
+  border-top: 1px solid rgba(128, 128, 128, 0.623);
+  padding-top: 14px;
+}
+
+.gray-data {
+  color: rgb(179, 177, 177);
+}
+
+.history-table__details-text-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.history-table__details-text-values {
+  margin-left: 5px;
+}
+
+.pagination,
+.loading-container {
+  text-align: center;
+}
+
+.history-table__details-text-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-table__details-name {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 10rem;
+}
+
+.main-header {
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.main-header_link {
+  margin: 1rem;
+  text-decoration: none;
+  color: blue;
+}
+
+.home-page-container {
+  text-align: center;
+}
+
+.home-page-container_cat-img {
+  width: 60vw;
+}
+
+.history-table__details-text-item {
+  position: relative;
+}
+
+.history-table__details-text-item .tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  white-space: break-spaces;
+  max-width: 18rem;
+  width: max-content;
+  position: absolute;
+  z-index: 1;
+}
+
+.history-table__details-text-item:hover .tooltiptext {
+  visibility: visible;
+}
+
+.cur-page {
+  color: red;
+}
