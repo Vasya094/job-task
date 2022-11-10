@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { DetailsValues } from "../components/DetailsValues"
 import { Footer } from "../components/Footer"
 import { TableHeader } from "../components/TableHeader"
-import { connectResourceInfoWithEvents, detIds, formatDate } from "../helpers"
+import { TableRow } from "../components/TableRow"
+import { connectResourceInfoWithEvents, detIds } from "../helpers"
 import { EventTypeWithResource, InitialState } from "../interfaces"
 import { loadEventsStart, loadMoreResourses } from "../redux/actions"
 
@@ -71,44 +71,7 @@ function History() {
             <div className='history-table__table-body'>
               {itemsToRender && itemsToRender.length
                 ? itemsToRender.map((item, index) => (
-                    <div
-                      className={`history-table__table-row ${
-                        !item.noFirst ? "with-separator" : ""
-                      }`}
-                      key={item.id + index.toString()}
-                    >
-                      <div className='history-table__table-cell history-table__name-col '>
-                        {!item.noFirst && (
-                          <span
-                            className={`history-table__first-cell history-table__cell-${item.name}`}
-                          >
-                            {item.name}
-                          </span>
-                        )}
-                      </div>
-                      <div className='history-table__details-col'>
-                        <span className='history-table__details-text-container'>
-                          <span className='history-table__details-name'>
-                            {item.myResource?.details}
-                          </span>
-                          {item.myResource?.values &&
-                          item.myResource?.values.length
-                            ? ":"
-                            : ""}
-                          <DetailsValues item={item} />
-                        </span>
-                      </div>
-                      <div className='history-table__code-col history-table__code-col-tbody'>
-                        {item.myResource?.code}
-                      </div>
-                      <div
-                        className={`history-table__date-col ${
-                          item.noFirst ? "gray-data" : ""
-                        }`}
-                      >
-                        {formatDate(item.date)}
-                      </div>
-                    </div>
+                    <TableRow item={item} index={index} />
                   ))
                 : null}
             </div>
