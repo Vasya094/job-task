@@ -4,7 +4,7 @@ export interface EventType {
   id: string
   name: string
   resource: string
-  noFirst?: boolean
+  noFirst: boolean
 }
 
 export interface ResourceType {
@@ -20,6 +20,8 @@ export interface EventTypeWithResource extends EventType {
 
 export interface InitialState {
   events: Array<EventType>
+  itemsToRender: Array<EventTypeWithResource>
   resources: Array<ResourceType>
   loading: boolean
+  currentPage: number
 }

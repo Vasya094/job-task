@@ -31,3 +31,11 @@ export function loadMoreResoursesFailed(error: AxiosError) {
 export function resetAllData() {
   return { type: types.RESET_ALL_DATA }
 }
+
+export function setItemsToRender(items: ResourceType[]) {
+  return { type: types.SET_ITEMS_TO_RENDER, payload: items }
+}
+
+export function increaseCurrentPage() {
+  return { type: types.INCREASE_CURRENT_PAGE }
+}

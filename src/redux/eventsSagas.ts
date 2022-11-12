@@ -1,5 +1,10 @@
 import { takeLatest, put, call, fork, all } from "redux-saga/effects"
-import { loadEventsSuccess, loadEventsError, loadMoreResoursesSucceed, loadMoreResoursesFailed } from "./actions"
+import {
+  loadEventsSuccess,
+  loadEventsError,
+  loadMoreResoursesSucceed,
+  loadMoreResoursesFailed,
+} from "./actions"
 import { loadEventsApi, loadMoreEventsApi } from "./api"
 import { LOAD_EVENTS_START, LOAD_RESOURCES_START } from "./actionTypes"
 import { AxiosResponse } from "axios"
@@ -20,10 +25,16 @@ export function* onLoadEvents() {
   yield takeLatest(LOAD_EVENTS_START, onLoadEventsStartAsync)
 }
 
-export function* onLoadResourcesStartAsync(action: {type: string, payload?: string[]}) {
+export function* onLoadResourcesStartAsync(action: {
+  type: string
+  payload?: string[]
+}) {
   try {
     if (action.payload) {
-      const response: AxiosResponse = yield call(loadMoreEventsApi, action.payload)
+      const response: AxiosResponse = yield call(
+        loadMoreEventsApi,
+        action.payload
+      )
       if (response.status === 200) {
         yield put(loadMoreResoursesSucceed(response.data.items))
       }
@@ -32,7 +43,6 @@ export function* onLoadResourcesStartAsync(action: {type: string, payload?: stri
     yield put(loadMoreResoursesFailed(error))
   }
 }
-
 
 export function* onLoadResources() {
   yield takeLatest(LOAD_RESOURCES_START, onLoadResourcesStartAsync)

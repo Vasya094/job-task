@@ -12,12 +12,11 @@ export const TableRow = ({
   return (
     <div
       className={`history-table__table-row ${
-        !item.noFirst ? "with-separator" : ""
+        item.noFirst ? "with-separator" : ""
       }`}
-      key={item.id + index.toString()}
     >
       <div className='history-table__table-cell history-table__name-col '>
-        {!item.noFirst && (
+        {item.noFirst && (
           <span
             className={`history-table__first-cell history-table__cell-${item.name}`}
           >
@@ -38,7 +37,9 @@ export const TableRow = ({
         {item.myResource?.code}
       </div>
       <div
-        className={`history-table__date-col ${item.noFirst ? "gray-data" : ""}`}
+        className={`history-table__date-col ${
+          !item.noFirst ? "gray-data" : ""
+        }`}
       >
         {formatDate(item.date)}
       </div>

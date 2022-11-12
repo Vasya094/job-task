@@ -1,41 +1,89 @@
 import { EventType, EventTypeWithResource, ResourceType } from "../interfaces"
 
-export const detIds = (events: EventType[], page: number): string[] => {
+export const getIds = (events: EventType[], page: number): string[] => {
   return events
-    .slice((page - 1) * 15, (page - 1) * 15 + 15)
+    .slice((page - 1) * 15, page * 15 + 15)
     .map((evs) => `${evs.resource}/${evs.id}`)
 }
 
-export const formatEventsToRender = (events: EventType[]): EventType[] => {
-  const Appointments = events
-    .filter((itm) => !itm.appointmentId)
-    .sort(function (a, b) {
-      var c = new Date(a.date).getTime()
-      var d = new Date(b.date).getTime()
+export const sortByTime = (a: EventType, b: EventType) => {
+  const c = new Date(a.date).getTime()
+  const d = new Date(b.date).getTime()
+  return d - c
+}
+
+export const theSameJustDate = (a: string, b: string): boolean => {
+  const date1 = new Date(a)
+  const date2 = new Date(b)
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  )
+}
+
+export const theSameTime = (a: string, b: string): boolean => {
+  const date1 = new Date(a)
+  const date2 = new Date(b)
+  return (
+    date1.getHours() === date2.getHours() &&
+    date1.getMinutes() === date2.getMinutes() &&
+    date1.getSeconds() === date2.getSeconds()
+  )
+}
+
+export const sortChildGroups = (childs: EventType[]) => {
+  const sameTypesArray: {
+    [key: string]: EventType[]
+  } = {}
+  childs.forEach((cld) => {
+    if (
+      sameTypesArray[cld.name + cld.date.split("T")[0]] &&
+      sameTypesArray[cld.name + cld.date.split("T")[0]].length
+    ) {
+      if (
+        theSameJustDate(
+          sameTypesArray[cld.name + cld.date.split("T")[0]][0].date,
+          cld.date
+        )
+      ) {
+        sameTypesArray[cld.name + cld.date.split("T")[0]].push(cld)
+      }
+    } else {
+      sameTypesArray[cld.name + cld.date.split("T")[0]] = [cld]
+    }
+  })
+  return Object.values(sameTypesArray)
+    .sort((a, b) => {
+      const c = new Date(a[a.length - 1].date).getTime()
+      const d = new Date(b[b.length - 1].date).getTime()
       return d - c
     })
-  const subAppointments = events.filter((itm) => itm.appointmentId)
+    .map((itm) => [{ ...itm[0], noFirst: true }, ...itm.slice(1)])
+    .flat(1)
+}
 
+export const formatEventsToRender = (events: EventType[]): EventType[] => {
+  const result = []
+  const Appointments = events
+    .filter((itm) => !itm.appointmentId)
+    .map((itm) => ({ ...itm, noFirst: true }))
+    .sort(sortByTime)
+  const subAppointments = events.filter((itm) => itm.appointmentId)
   for (let i = 0; i < Appointments.length; i++) {
-    //Do something
     const childsOfParent = subAppointments
       .filter((itm) => itm.appointmentId === Appointments[i].id)
-      .sort(function (a, b) {
-        var c = new Date(a.date).getTime()
-        var d = new Date(b.date).getTime()
-        return d - c
-      })
-      .map((itm, index) => ({ ...itm, noFirst: index !== 0 }))
+      .sort(sortByTime)
 
-      if (childsOfParent.length) {
-      const parentIndex = Appointments.findIndex(
-        (par) => par.id === childsOfParent[0].appointmentId
-      )
-      Appointments.splice(parentIndex + 1, 0, ...childsOfParent)
+    const rigthSortedChilds = sortChildGroups(childsOfParent)
+    if (rigthSortedChilds.length) {
+      result.push(Appointments[i], ...rigthSortedChilds)
+    } else {
+      result.push(Appointments[i])
     }
   }
 
-  return Appointments
+  return result
 }
 
 export const formatDate = (dateStr: string) => {
@@ -51,11 +99,11 @@ export const connectResourceInfoWithEvents = (
   resources: ResourceType[]
 ): EventTypeWithResource[] => {
   const result: Array<EventTypeWithResource> = []
-  someEvents.forEach((event) => {
-    const myRes = resources.find(
-      (res) => res.id === `${event.resource}/${event.id}`
+  resources.forEach((resource) => {
+    const myEv = someEvents.find(
+      (ev) => resource.id === `${ev.resource}/${ev.id}`
     )
-    result.push({ ...event, myResource: myRes || null })
+    result.push({ ...(myEv as EventType), myResource: resource || null })
   })
   return result
 }

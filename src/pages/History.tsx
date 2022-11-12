@@ -1,29 +1,29 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { Footer } from "../components/Footer"
 import { TableHeader } from "../components/TableHeader"
 import { TableRow } from "../components/TableRow"
-import { connectResourceInfoWithEvents, detIds } from "../helpers"
-import { EventTypeWithResource, InitialState } from "../interfaces"
-import { loadEventsStart, loadMoreResourses } from "../redux/actions"
+import { getIds } from "../helpers"
+import { InitialState } from "../interfaces"
+import {
+  increaseCurrentPage,
+  loadEventsStart,
+  loadMoreResourses,
+} from "../redux/actions"
 
 function History() {
   const dispatch = useDispatch()
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsToRender, setItemsToRender] = useState<
-    Array<EventTypeWithResource>
-  >([])
-
   const tableBodyRef = useRef<HTMLDivElement>(null)
 
-  const { events, loading, resources } = useSelector(
+  const { events, loading, itemsToRender, currentPage } = useSelector(
     (state: { data: InitialState }) => state.data
   )
 
   const getNextPage = () => {
-    const ids = detIds(events, currentPage)
+    const ids = getIds(events, currentPage)
     dispatch(loadMoreResourses(ids))
+    dispatch(increaseCurrentPage())
   }
 
   useEffect(() => {
@@ -31,18 +31,10 @@ function History() {
   }, [])
 
   useEffect(() => {
-    if (events && events.length && currentPage === 1) {
+    if (events && events.length) {
       getNextPage()
     }
   }, [events])
-
-  useEffect(() => {
-    const resultItems = connectResourceInfoWithEvents(
-      events.slice((currentPage - 1) * 15, (currentPage - 1) * 15 + 15),
-      resources
-    )
-    setItemsToRender((prevItems) => [...prevItems, ...resultItems])
-  }, [resources])
 
   const onScroll = () => {
     if (tableBodyRef.current) {
@@ -53,7 +45,7 @@ function History() {
         events.length / 15 > currentPage
       ) {
         getNextPage()
-        setCurrentPage(currentPage + 1)
+        dispatch(increaseCurrentPage())
       }
     }
   }
@@ -71,7 +63,11 @@ function History() {
             <div className='history-table__table-body'>
               {itemsToRender && itemsToRender.length
                 ? itemsToRender.map((item, index) => (
-                    <TableRow item={item} index={index} />
+                    <TableRow
+                      key={item.id + index.toString()}
+                      item={item}
+                      index={index}
+                    />
                   ))
                 : null}
             </div>

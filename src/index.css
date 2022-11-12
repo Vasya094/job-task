@@ -139,6 +139,11 @@ code {
   border: 1px solid #f5ac4d;
 }
 
+.history-table__cell-Procedure {
+  background-color: #49494957;
+  border: 1px solid #1f1f1f;
+}
+
 .history-table__first-cell {
   border-radius: 2px;
   padding: 2px;
